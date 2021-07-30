@@ -3,51 +3,49 @@ package com.axel.threads;
 public class SynchronizedThreads {
 
     public static void main(String[] args){
-
         //Thread
-        Thread t1 = new Thread(new Threads());
-        Thread t2 = new Thread(new Threads());
-        Thread t3 = new Thread(new Threads());
+        Thread t1 = new Thread(new ThreadA());
+        t1.setName("Thread 1");
+        Thread t2 = new Thread(new ThreadB());
+        t2.setName("Thread 2");
+        Thread t3 = new Thread(new ThreadC());
+        t3.setName("Thread 3");
         t1.start();
         t2.start();
         t3.start();
-
-        //three threads
-        /*for(int i = 0; i < 2; i++){
-            thread.start();;
-            inst.print++;
-        }*/
-
-
     }
 }
 
-class Threads implements Runnable{
-
-    public char print = 'A';
-
-
+//This thread A prints A 12 times
+class ThreadA implements Runnable{
     @Override
     public void run() {
-
-        //synchronized (Threads.class){
         System.out.println("Inside Thread: " + Thread.currentThread().getName());
         for (int i = 0; i < 11; i++){
-            System.out.println(Thread.currentThread().getName() + ": " + i);
-               /*try {
-                   Threads.class.wait();
-               } catch (InterruptedException e) {
-                   e.printStackTrace();
-               }*/
+            System.out.println(Thread.currentThread().getName() + ": A");
         }
+    }
+}
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+//This thread B prints B 12 times
+class ThreadB implements Runnable{
+    @Override
+    public void run() {
+        System.out.println("Inside Thread: " + Thread.currentThread().getName());
+        for (int i = 0; i < 11; i++){
+            System.out.println(Thread.currentThread().getName() + ": B");
         }
-        //Threads.class.notifyAll();
-        //}
+    }
+}
+
+//This thread C prints C 12 times
+class ThreadC implements Runnable{
+    @Override
+    public void run() {
+        System.out.println("Inside Thread: " + Thread.currentThread().getName());
+        for (int i = 0; i < 11; i++){
+            System.out.println(Thread.currentThread().getName() + ": C");
+        }
     }
 }
 
