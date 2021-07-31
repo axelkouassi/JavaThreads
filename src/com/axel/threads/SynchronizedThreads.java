@@ -2,84 +2,106 @@ package com.axel.threads;
 
 public class SynchronizedThreads {
 
-    public static StringBuffer result = new StringBuffer("");
+    volatile int status = 1; // used to switch between threads
 
     public static void main(String[] args){
 
-        //Thread
-        Thread t1 = new Thread(new ThreadA());
+        SynchronizedThreads instance = new SynchronizedThreads();
+
+        //Creation of three threads
+        Thread t1 = new ThreadA(instance);
+        Thread t2 = new ThreadB(instance);
+        Thread t3 = new ThreadC(instance);
+
+        //Setting names of the three threads
         t1.setName("Thread 1");
-        Thread t2 = new Thread(new ThreadB());
         t2.setName("Thread 2");
-        Thread t3 = new Thread(new ThreadC());
         t3.setName("Thread 3");
+
+        //Starts the three threads
         t1.start();
-        try {
-            t1.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         t2.start();
+        t3.start();
+    }
+}
+
+//This thread A prints A 12 times
+class ThreadA extends Thread {
+    SynchronizedThreads instance;
+
+    ThreadA(SynchronizedThreads instance) {
+        this.instance = instance;
+    }
+
+    @Override
+    public void run() {
         try {
-            t2.join();
+            synchronized (instance) {
+                for (int i = 0; i < 12; i++) {
+                    while (instance.status != 1) {
+                        instance.wait();
+                    }
+                    System.out.print("A");
+                    instance.status = 2;
+                    instance.notifyAll();
+                }
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        t3.start();
-
-        //System.out.println();
-        //System.out.println("Final value of result: " + result);
     }
 }
 
-//This thread A adds A to StringBuilder result 12 times
-class ThreadA implements Runnable{
+//This thread B prints B 12 times
+class ThreadB extends Thread {
+    SynchronizedThreads instance;
+
+    ThreadB(SynchronizedThreads instance) {
+        this.instance = instance;
+    }
+
     @Override
     public void run() {
-        System.out.println("Inside Thread: " + Thread.currentThread().getName());
-        for (int i = 0; i < 11; i++){
-            SynchronizedThreads.result.append("A");
-            System.out.println(Thread.currentThread().getName() + ": " + SynchronizedThreads.result);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        try {
+            synchronized (instance) {
+                for (int i = 0; i < 12; i++) {
+                    while (instance.status != 2) {
+                        instance.wait();
+                    }
+                    System.out.print("B");
+                    instance.status = 3;
+                    instance.notifyAll();
+                }
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
 
-//This thread B adds B to StringBuilder result 12 times
-class ThreadB implements Runnable{
+//This thread C prints C 12 times
+class ThreadC extends Thread {
+    SynchronizedThreads instance;
+
+    ThreadC(SynchronizedThreads instance) {
+        this.instance = instance;
+    }
+
     @Override
     public void run() {
-        System.out.println("Inside Thread: " + Thread.currentThread().getName());
-        for (int i = 0; i < 11; i++){
-            SynchronizedThreads.result.append("B");
-            System.out.println(Thread.currentThread().getName() + ": " + SynchronizedThreads.result);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        try {
+            synchronized (instance) {
+                for (int i = 0; i < 12; i++) {
+                    while (instance.status != 3) {
+                        instance.wait();
+                    }
+                    System.out.print("C");
+                    instance.status = 1;
+                    instance.notifyAll();
+                }
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
-
-//This thread C adds B to StringBuilder result 12 times
-class ThreadC implements Runnable{
-    @Override
-    public void run() {
-        System.out.println("Inside Thread: " + Thread.currentThread().getName());
-        for (int i = 0; i < 11; i++){
-            SynchronizedThreads.result.append("C");
-            System.out.println(Thread.currentThread().getName() + ": " + SynchronizedThreads.result);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-
