@@ -1,7 +1,5 @@
 package com.axel.producerconsumer;
 
-import com.axel.practice.ThreadExample;
-
 import java.util.LinkedList;
 
 public class ProducerConsumer {
@@ -50,12 +48,12 @@ public class ProducerConsumer {
         consumer.join();
     }
 
-    // This class has a list, producer (adds items to list and consumer (removes items).
+    // This class has a list, producer (adds items to list) and consumer (removes items).
     public static class ProdConsum {
 
-        // Create a list shared by producer and consumer
-        // size of list is randomly chosen
+        // List shared by producer and consumer
         LinkedList<Integer> list = new LinkedList<>();
+        // size of list is randomly chosen
         int capacity = (int) (Math.random()*10)+1;
 
         // Function called by producer thread
@@ -72,17 +70,15 @@ public class ProducerConsumer {
 
                     System.out.println(Thread.currentThread().getName() + " produced: " + value);
 
-                    // to insert the jobs in the list
-                    list.add(value++);
+                    // to insert the random number in the list
+                    list.add(value);
                     System.out.println("List contents after production: " + list.toString());
                     System.out.println();
 
-                    // notifies the consumer thread that
-                    // now it can start consuming
+                    // notifies the consumer thread that now it can start consuming
                     notify();
 
-                    // makes the working of program easier
-                    // to understand
+                    // Wait for a second before next instruction
                     Thread.sleep(1000);
                 }
             }
@@ -94,12 +90,11 @@ public class ProducerConsumer {
             while (true) {
                 synchronized (this)
                 {
-                    // consumer thread waits while list
-                    // is empty
+                    // consumer thread waits while list is empty
                     while (list.size() == 0)
                         wait();
 
-                    // to retrieve the first job in the list
+                    // Retrieve the first random number in the list
                     int val = list.removeFirst();
 
                     System.out.println(Thread.currentThread().getName() + " consumed: " + val);
@@ -115,6 +110,7 @@ public class ProducerConsumer {
             }
         }
     }
+
 }
 
 
