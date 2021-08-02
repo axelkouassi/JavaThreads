@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 public class ProducerConsumer {
     public static void main(String[] args) throws InterruptedException {
+
         // Object of a class that has both produce()and consume() methods
         final ProdConsum pc = new ProdConsum();
 
@@ -61,6 +62,7 @@ public class ProducerConsumer {
         {
             int value = (int) (Math.random()*10)+1;
             System.out.println("List capacity : " + capacity);
+            System.out.println();
             while (true) {
                 synchronized (this)
                 {
@@ -74,6 +76,11 @@ public class ProducerConsumer {
                     list.add(value);
                     System.out.println("List contents after production: " + list.toString());
                     System.out.println();
+
+                    //Generate random value and assign to value
+                    value = (int) (Math.random()*10)+1;
+
+
 
                     // notifies the consumer thread that now it can start consuming
                     notify();
