@@ -44,7 +44,7 @@ public class ProducerConsumer {
         producer.start();
         consumer.start();
 
-        // t1 finishes before t2
+        // producer finishes before consumer
         producer.join();
         consumer.join();
     }
